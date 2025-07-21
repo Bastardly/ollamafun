@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
       headers: {
         "Content-Type": "application/json",
       },
+
+      // TODO FHA - MOVE TO SERVER !!
       body: JSON.stringify({
         model: "llama3.2",
         prompt: promptInput.value,
