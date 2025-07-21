@@ -3,23 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <title>Ollama Prompt UI</title>
+  <script src="/static/app.js" defer></script>
 </head>
 <body>
-  <h1>Ask Ollama</h1>
-  <form method="POST" action="/">
+    <style>
+        pre {
+            white-space: break-spaces;
+        }
+    </style>
+  <h1>Ask the Llama</h1>
+  <form method="POST" id="promptForm">
     <label for="prompt">Prompt:</label><br>
-    <textarea id="prompt" name="prompt" rows="6" cols="60">{{.Prompt}}</textarea><br><br>
+    <textarea id="prompt" name="prompt" rows="6" cols="60"></textarea><br><br>
     <input type="submit" value="Send">
   </form>
 
-  {{if .Response}}
-    <h2>Response:</h2>
-    <pre>{{.Response}}</pre>
-  {{end}}
+  <h2>Response:</h2>
+  <pre id="responseBox"></pre>
 
-  {{if .Error}}
-    <h2 style="color: red;">Error:</h2>
-    <pre>{{.Error}}</pre>
-  {{end}}
+  <h2 style="color: red;">Error:</h2>
+  <pre id="errorBox"></pre>
+
 </body>
 </html>
