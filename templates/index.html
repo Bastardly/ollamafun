@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ollama Prompt UI</title>
+</head>
+<body>
+  <h1>Ask Ollama</h1>
+  <form method="POST" action="/">
+    <label for="prompt">Prompt:</label><br>
+    <textarea id="prompt" name="prompt" rows="6" cols="60">{{.Prompt}}</textarea><br><br>
+    <input type="submit" value="Send">
+  </form>
+
+  {{if .Response}}
+    <h2>Response:</h2>
+    <pre>{{.Response}}</pre>
+  {{end}}
+
+  {{if .Error}}
+    <h2 style="color: red;">Error:</h2>
+    <pre>{{.Error}}</pre>
+  {{end}}
+</body>
+</html>
