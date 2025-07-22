@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
+    if (promptInput.value.trim().length < 1) return;
+
     errorBox.textContent = "";
     responseBox.textContent = "responding...";
 
@@ -21,11 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
         "Content-Type": "application/json",
       },
 
-      // TODO FHA - MOVE TO SERVER !!
       body: JSON.stringify({
-        model: "llama3.2",
         prompt: promptInput.value,
-        stream: false,
       }),
     });
 
