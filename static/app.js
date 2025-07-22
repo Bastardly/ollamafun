@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const responseBox = document.getElementById("responseBox");
   const errorBox = document.getElementById("errorBox");
 
+  console.log("LOADED!");
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
