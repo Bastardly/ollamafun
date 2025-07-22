@@ -13,23 +13,8 @@ type generateInput struct {
 	Prompt string `json:"prompt"`
 }
 
-func HandleGenerate(w http.ResponseWriter, r *http.Request) {
-	var input generateInput
-	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
-		http.Error(w, "invalid JSON body", http.StatusBadRequest)
-		return
-	}
-
-	client, err := api.ClientFromEnvironment()
-	if err != nil {
-		http.Error(w, "failed to create Ollama client: "+err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	ctx, cancel := context.WithTimeout(r.Context(), 60*time.Second)
-	defer cancel()
-
-	fullInput := `
+func (g generateInput) getInsultJSON() string {
+	return `
 You are a content moderation AI. Analyze the following input and respond only with a JSON object. 
 
 Mark the content as offensive if it contains:
@@ -50,13 +35,30 @@ The JSON must have:
   - "offensive": a boolean indicating if the text is offensive,
   - "reason": a short explanation if it is offensive (or null if not offensive).
 
-Input: """` + input.Prompt + `"""
+Input: """` + g.Prompt + `"""
 Respond in JSON only.
 `
+}
+
+func HandleGenerate(w http.ResponseWriter, r *http.Request) {
+	var input generateInput
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		http.Error(w, "invalid JSON body", http.StatusBadRequest)
+		return
+	}
+
+	client, err := api.ClientFromEnvironment()
+	if err != nil {
+		http.Error(w, "failed to create Ollama client: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(r.Context(), 60*time.Second)
+	defer cancel()
 
 	req := &api.GenerateRequest{
 		Model:  "llama3.2",
-		Prompt: fullInput,
+		Prompt: input.getInsultJSON(),
 		Stream: func(b bool) *bool { return &b }(false),
 		Options: map[string]interface{}{
 			"temperature": 0.4,
