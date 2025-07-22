@@ -40,6 +40,33 @@ Respond in JSON only.
 `
 }
 
+func (g generateInput) getCharacter() string {
+	return `
+Du er en AI, der skriver farverige og sjove karakterintroduktioner. Analyser følgende input og svar kun med et JSON-objekt.
+
+Hvis prompten indeholder en karakter, så:
+  - Brug alle detaljer fra prompten.
+  - Sørg for at modtageren ved, hvem karakteren er, hvad de hedder, hvad de kan lide, og hvordan de opfører sig.
+  - Undgå klichéer – find på noget originalt og levende.
+  - Gør introduktionen som om karakteren selv præsenterer sig fx. ("Hej, jeg hedder...").
+  - Sørg for at det føles personligt, sjovt og lidt skævt.
+  - Tilføj gerne små finurlige detaljer, vaner eller særheder.
+
+Hvis prompten **ikke** indeholder en karakter, så opfind en selv ud fra din fantasi. Gør den mindeværdig og underholdende.
+
+Svar skal være på **dansk**, og ikke på svensk eller norsk. Det skal være i følgende JSON-format:
+
+{
+  "navn": "Karakterens fulde navn på dansk",
+  "introduktion": "En kort og personlig introduktion skrevet i jeg-form på dansk",
+  "beskrivelse": "En detaljeret beskrivelse i 3. person af karakterens personlighed, baggrund og særpræg på dansk"
+}
+
+Input: """` + g.Prompt + `"""
+Svar KUN med JSON – ingen forklaringer eller ekstra tekst.
+`
+}
+
 func HandleGenerate(w http.ResponseWriter, r *http.Request) {
 	var input generateInput
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
@@ -58,7 +85,7 @@ func HandleGenerate(w http.ResponseWriter, r *http.Request) {
 
 	req := &api.GenerateRequest{
 		Model:  "llama3.2",
-		Prompt: input.getInsultJSON(),
+		Prompt: input.getCharacter(),
 		Stream: func(b bool) *bool { return &b }(false),
 		Options: map[string]interface{}{
 			"temperature": 0.4,
