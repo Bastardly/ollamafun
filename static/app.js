@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const promptInput = document.getElementById("prompt");
   const responseBox = document.getElementById("responseBox");
   const errorBox = document.getElementById("errorBox");
+  const queryText = document.getElementById("query");
 
   console.log("LOADED!");
 
@@ -37,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const json = await res.json();
     responseBox.disabled = false;
     responseBox.textContent = json.response;
+    queryText.innerText = promptInput.value;
     promptInput.value = "";
     promptInput.disabled = false;
     promptInput.focus();
