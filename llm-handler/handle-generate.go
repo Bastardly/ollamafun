@@ -32,8 +32,8 @@ func HandleGenerate(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 
 	req := &api.GenerateRequest{
-		Model: ModelLlama32,
-		Prompt: input.getCharacterUK(),
+		Model:  ModelLlama32,
+		Prompt: input.getInsultJSON(),
 		Stream: func(b bool) *bool { return &b }(false),
 		Options: map[string]interface{}{
 			"temperature": 0.8,

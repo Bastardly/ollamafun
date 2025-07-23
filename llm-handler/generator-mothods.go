@@ -4,6 +4,7 @@ type generateInput struct {
 	Prompt string `json:"prompt"`
 }
 
+// getInsultJSON creates a prompt with a data structure to determine if input is offensive
 func (g generateInput) getInsultJSON() string {
 	return `
 You are a content moderation AI. Analyze the following input and respond only with a JSON object. 
@@ -31,6 +32,7 @@ Respond in JSON only.
 `
 }
 
+// getCharacterDK prompt in Danish to test models in my native language. Creates a basic roleplaying NPC for D&D
 func (g generateInput) getCharacterDK() string {
 	return `
 Du er en AI, der skriver farverige og sjove karakterintroduktioner til karakter i rollespillet Dungeons and Dragons. Analyser følgende input og svar kun med et JSON-objekt.
@@ -58,6 +60,7 @@ Svar KUN med JSON – ingen forklaringer eller ekstra tekst.
 `
 }
 
+// getCharacterUK creates a prompt for creating a basic roleplaying NPC for D&D
 func (g generateInput) getCharacterUK() string {
 	return `
 You are an AI that writes colorful and funny character introductions for characters in the roleplaying game Dungeons and Dragons. Analyze the following input and respond **only** with a JSON object.
