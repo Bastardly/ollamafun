@@ -64,8 +64,9 @@ pre {
   height: 80vh;
 }
 
-[variant="faded"] {
-  color: grey;
+textarea {
+    width: 100%;
+    padding: 8px;
 }
 
 [variant="error"] {

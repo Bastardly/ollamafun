@@ -32,13 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  const deleteMe = document.createElement("button");
-  deleteMe.innerText = "Create mock prompt";
-  deleteMe.onclick = () =>
-    addToConversation("prompt", "Hello from the mock button" + count);
-
-  form.appendChild(deleteMe);
-
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -71,4 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
     promptInput.disabled = false;
     promptInput.focus();
   });
+
+  promptInput.focus();
 });
