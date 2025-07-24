@@ -56,6 +56,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!res.ok) {
       const text = await res.text();
       errorBox.textContent = "ERROR: " + text;
+      promptInput.disabled = false;
+      promptInput.focus();
       return;
     }
     addToConversation("prompt", promptInput.value);

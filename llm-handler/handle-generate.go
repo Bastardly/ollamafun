@@ -9,12 +9,6 @@ import (
 	"github.com/ollama/ollama/api"
 )
 
-const (
-	ModelLlama32 = "llama3.2"
-	ModelPhi3    = "phi3:latest"
-	ModelMulti   = "llava"
-)
-
 func HandleGenerate(w http.ResponseWriter, r *http.Request) {
 	var input generateInput
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
@@ -32,12 +26,13 @@ func HandleGenerate(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 
 	req := &api.GenerateRequest{
-		Model:  ModelLlama32,
+		Model:  input.getModel(),
 		Prompt: input.getPromptTemplate(),
 		Stream: func(b bool) *bool { return &b }(false),
 		Options: map[string]interface{}{
 			"temperature": 0.8,
 			"max_tokens":  2000,
+			"agent":       true,
 		},
 	}
 

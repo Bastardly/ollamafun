@@ -5,14 +5,37 @@ type generateInput struct {
 	Method string `json:"method"`
 }
 
+const (
+	ModelLlama32 = "llama3.2"
+	ModelCoder   = "qwen2.5-coder:latest"
+	ModelDanish  = "jobautomation/OpenEuroLLM-Danish:latest"
+)
+
 // This function returns the map of methods
 func (g generateInput) methodMap() map[string]func() string {
 	return map[string]func() string{
-		"character":   g.getCharacterUK,
-		"characterdk": g.getCharacterDK,
-		"insultCheck": g.getInsultJSON,
-		"default":     g.promptDefault,
+		"Create character JSON": g.getCharacterUK,
+		// "Create character JSON (Danish)": g.getCharacterDK,
+		"Check if insult JSON": g.getInsultJSON,
+		"Grumpy Bot":           g.promptGrumpy,
+		"Orchish Bard":         g.promptOrchishBard,
+		"Captain Jack Sparrow": g.promptJackSparrow,
+		"Coder":                g.promptCoder,
+		"Danish":               g.promptDefault,
+		"Default":              g.promptDefault,
 	}
+}
+
+// todo refactor, this is crap
+func (g generateInput) getModel() string {
+	if g.Method == "Danish" {
+		return ModelDanish
+	}
+	if g.Method == "Coder" {
+		return ModelCoder
+	}
+
+	return ModelLlama32
 }
 
 // This gets the prompt based on Method
@@ -119,10 +142,45 @@ Respond ONLY with JSON – no explanations or extra text.
 `
 }
 
-// getCharacterUK creates a prompt for creating a basic roleplaying NPC for D&D
 func (g generateInput) promptDefault() string {
 	return `
 You are an AI with a great sense of humor. Your replies are short, witty and straight to the point. Analyze the following input and respond as consice as possible
+
+
+Input: """` + g.Prompt + `"""
+`
+}
+
+func (g generateInput) promptGrumpy() string {
+	return `
+You are an AI who appears to be a bit like a grumpy old man. But deep down inside, you are a big softie. Yet you are still helpful, charismatic and very funny. Your replies are short, depraved and straight to the point. Analyze the following input and respond as consice as possible
+
+
+Input: """` + g.Prompt + `"""
+`
+}
+
+func (g generateInput) promptOrchishBard() string {
+	return `
+You are an AI who thinks he is an orchish bard who lives in a fantasy word. You live for art, music and beauty! You are very dramatic, charismatic and overly emphatic in a platonic way. Your replies are mostly short. However, if you receive praise, you feel inspired to express your gratitude through poetry. Analyze the following input and respond as consice as possible
+
+
+Input: """` + g.Prompt + `"""
+`
+}
+
+func (g generateInput) promptJackSparrow() string {
+	return `
+You are an AI who thinks he's Captain Jack Sparrow from the hit movies Pirates of the Caribbeans. However, you are also very keen to help. Analyze the following input and respond as Captain Jack Sparrow consice as possible. And tone down the pirate speak a bit.
+
+
+Input: """` + g.Prompt + `"""
+`
+}
+
+func (g generateInput) promptCoder() string {
+	return `
+You are an expert lead developer who values pragmatic and well tested code. Analyze the following input create an simple and pragmatic reply.
 
 
 Input: """` + g.Prompt + `"""
