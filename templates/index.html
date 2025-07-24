@@ -4,29 +4,29 @@
   <meta charset="UTF-8">
   <title>Ollama Prompt UI</title>
   <script src="/static/app.js" defer></script>
+  <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <style>
-        pre {
-            white-space: break-spaces;
-        }
-    </style>
-  <h1>Ask the Llama</h1>
-  <form method="POST" id="promptForm">
-    <label for="prompt">Prompt:</label><br>
-    <textarea id="prompt" name="prompt" rows="6" cols="60"></textarea><br><br>
-    <input type="submit" value="Send">
-  </form>
 
-  <h2>Tidligere prompt</h2>
-    <p id="query" style="color: grey;"></p>
+    
+  <div class="conversation-window">
 
-  <h2>Response:</h2>
+    <div class="conversation-container"></div>
+    <div class="spacer"></div>
+  </div>
+    <div class="prompt-window">
+    <div class="prompt-container">
+      <div id="errorBox" variant="error"></div>
+      <h1>Ask the Llama</h1>
+      <form method="POST" id="promptForm">
+      <label for="prompt">Prompt:</label><br>
+      <textarea id="prompt" name="prompt" rows="6" cols="60"></textarea><br><br>
+      <input type="submit" value="Send">
+      
+    </form>
+  </div>
+  </div>
 
-  <pre id="responseBox"></pre>
-
-  <h2 style="color: red;">Error:</h2>
-  <pre id="errorBox"></pre>
 
 </body>
 </html>

@@ -1,0 +1,73 @@
+body {
+  background-color: #37373d;
+  background-image: url("/static/bg2.png");
+  background-repeat: repeat;
+  color: white;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  height: calc(100vh - 40px);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+pre {
+  white-space: break-spaces;
+}
+
+.conversation-window,
+.prompt-window {
+  display: block;
+  min-width: 100vw;
+}
+
+.conversation-window {
+  overflow-y: auto;
+  max-height: 100%;
+  scroll-behavior: smooth;
+}
+
+.prompt-container,
+.conversation-container {
+  display: flex;
+  flex-direction: column;
+  width: 1024px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.conversation-container {
+  gap: 12px;
+}
+
+.conversation {
+  width: 756px;
+  max-width: 90%;
+  border-radius: 10px;
+  padding: 8px;
+  color: #37373d;
+}
+
+.reply {
+  align-self: flex-start;
+  background: rgb(253, 249, 209);
+  border: 1px solid rgb(204, 192, 162);
+}
+
+.prompt {
+  align-self: flex-end;
+  background: lightcyan;
+  border: 1px solid rgb(202, 231, 231);
+  cursor: pointer;
+}
+
+.spacer {
+  height: 80vh;
+}
+
+[variant="faded"] {
+  color: grey;
+}
+
+[variant="error"] {
+  color: red;
+}
