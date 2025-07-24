@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("promptForm");
   const promptInput = document.getElementById("prompt");
   const errorBox = document.getElementById("errorBox");
+  const promptTemplate = document.getElementById("prompt-template");
   const conversation = document.querySelector("div.conversation-container");
   const conversationWindow = document.querySelector("div.conversation-window");
   const scrollFromTopOffset = 12; //12px
@@ -48,6 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       body: JSON.stringify({
         prompt: promptInput.value,
+        method: promptTemplate.value,
       }),
     });
 

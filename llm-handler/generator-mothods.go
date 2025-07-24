@@ -2,7 +2,38 @@ package llmhandler
 
 type generateInput struct {
 	Prompt string `json:"prompt"`
+	Method string `json:"method"`
 }
+
+// This function returns the map of methods
+func (g generateInput) methodMap() map[string]func() string {
+	return map[string]func() string{
+		"character":   g.getCharacterUK,
+		"characterdk": g.getCharacterDK,
+		"insultCheck": g.getInsultJSON,
+		"default":     g.promptDefault,
+	}
+}
+
+// This gets the prompt based on Method
+func (g generateInput) getPromptTemplate() string {
+	if fn, ok := g.methodMap()[g.Method]; ok {
+		return fn()
+	}
+	return g.promptDefault()
+}
+
+// This exposes available method keys as a string array
+func (g generateInput) availableMethods() []string {
+	keys := make([]string, 0, len(g.methodMap()))
+	for k := range g.methodMap() {
+		keys = append(keys, k)
+	}
+	return keys
+}
+
+var mockInput generateInput
+var AvailableMethods = mockInput.availableMethods()
 
 // getInsultJSON creates a prompt with a data structure to determine if input is offensive
 func (g generateInput) getInsultJSON() string {
@@ -85,5 +116,15 @@ The response must be in the following JSON format:
 
 Input: """` + g.Prompt + `"""
 Respond ONLY with JSON – no explanations or extra text.
+`
+}
+
+// getCharacterUK creates a prompt for creating a basic roleplaying NPC for D&D
+func (g generateInput) promptDefault() string {
+	return `
+You are an AI with a great sense of humor. Your replies are short, witty and straight to the point. Analyze the following input and respond as consice as possible
+
+
+Input: """` + g.Prompt + `"""
 `
 }

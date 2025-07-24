@@ -64,9 +64,19 @@ pre {
   height: 80vh;
 }
 
+.prompt-submit-container {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 4px;
+}
+
+select,
 textarea {
-    width: 100%;
     padding: 8px;
+}
+
+textarea {
+        width: 100%;
 }
 
 [variant="error"] {

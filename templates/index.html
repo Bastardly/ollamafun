@@ -20,7 +20,18 @@
       <form method="POST" id="promptForm">
       <label for="prompt">Ask the Llama:</label><br>
       <textarea id="prompt" name="prompt" rows="6" cols="60"></textarea><br><br>
-      <input type="submit" value="Send">
+      <span class="prompt-submit-container">
+        <span>
+          <input type="submit" value="Send">
+        </span>
+       Selected prompt template: 
+
+        <select id="prompt-template">
+          {{range .PromptMethods}}
+          <option value="{{.}}"  {{if eq . "default"}}selected{{end}}>{{.}}</option>
+          {{end}}
+        </select> 
+      </span> 
       
     </form>
   </div>

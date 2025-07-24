@@ -3,6 +3,7 @@ package main
 import (
 	"html/template"
 	"log"
+	llmhandler "main/llm-handler"
 	"net/http"
 	"sync"
 	"time"
@@ -25,10 +26,14 @@ func updateUITemplates() {
 	loadUITemplates()
 }
 
-type PageData struct{}
+type PageData struct {
+	PromptMethods []string
+}
 
 func handleIndex(w http.ResponseWriter, r *http.Request) {
-	templates.Execute(w, PageData{})
+	templates.Execute(w, PageData{
+		PromptMethods: llmhandler.AvailableMethods,
+	})
 }
 
 func loadUITemplates() {
