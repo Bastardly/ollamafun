@@ -1,15 +1,6 @@
 package llmhandler
 
-type generateInput struct {
-	Prompt string `json:"prompt"`
-	Method string `json:"method"`
-}
-
-const (
-	ModelLlama32 = "llama3.2"
-	ModelCoder   = "qwen2.5-coder:latest"
-	ModelDanish  = "jobautomation/OpenEuroLLM-Danish:latest"
-)
+// This file is not used, but kept for reference
 
 // This function returns the map of methods
 func (g generateInput) methodMap() map[string]func() string {

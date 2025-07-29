@@ -24,6 +24,7 @@ pre {
   overflow-y: auto;
   max-height: 100%;
   scroll-behavior: smooth;
+  padding-top: 12px;
 }
 
 .prompt-container,
@@ -32,7 +33,7 @@ pre {
   flex-direction: column;
   width: 1024px;
   max-width: 100%;
-  margin: 0 auto;
+  margin: 12px auto 0;
 }
 
 .conversation-container {
@@ -45,7 +46,7 @@ pre {
   border-radius: 10px;
   padding: 8px;
   color: #37373d;
-      white-space: break-spaces;
+  white-space: break-spaces;
 }
 
 .reply {
