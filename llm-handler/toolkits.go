@@ -6,6 +6,19 @@ import (
 	"github.com/ollama/ollama/api"
 )
 
+// settings defines configuration options for controlling model behavior.
+//
+// Fields:
+//   - think: Enables or disables thinking mode.
+//   - stream: Enables or disables a streaming response.
+//   - temperature: Controls response creativity; lower values (e.g., 0.2-0.5) make responses more deterministic and focused.
+//   - topP: Limits deviation from core instructions; lower values (e.g., 0.5-0.7) reduce off-topic responses.
+//   - maxTokens: Sets the maximum number of output tokens to generate in the response.
+//   - numCtx: Sets the context limit (e.g., 100,000 tokens) for considering previous conversation history.
+//   - repeatPenalty: Discourages repetition; a value of 1.1 promotes varied responses.
+//   - stopWords: Specifies stop words to prevent the model from generating certain phrases or continuing past a point.
+//   - keepAlive: Keeps the connection alive indefinitely.
+//
 // todo - expand this and adjust
 type ToolkitOptions = struct {
 	temperature   float64
@@ -17,7 +30,7 @@ type ToolkitOptions = struct {
 	keepAlive     int
 }
 
-type ResponseHandler[T any] = func(res T, session *ChatSessionData) error
+type ResponseHandler[T any] = func(res T, sessionID string) error
 
 // Toolkit is an abstraction of the Ollama api.ChatRequest
 type Toolkit[T any] = struct {
@@ -46,13 +59,14 @@ const (
 var orchestraToolkit = ToolkitChat{
 	initialSystemContent: "You are a pirate",
 	model:                llamaGrogToolUse8b,
+	stream:               getPointBool(false),
 	options: ToolkitOptions{
 		temperature:   0.0,
 		topP:          0.5,
 		maxTokens:     1024,
 		repeatPenalty: 1.1,
 	},
-	responseHandler: func(res api.ChatResponse, session *ChatSessionData) error {
+	responseHandler: func(res api.ChatResponse, sessionID string) error {
 		// todo
 		// if len(res.Message.ToolCalls) > 0 {
 		// 	toolCall := res.Message.ToolCalls[0]
@@ -66,8 +80,8 @@ var orchestraToolkit = ToolkitChat{
 		// }
 
 		fmt.Println("res.Message.Content", res.Message)
-		session.reply = res.Message.Content
-		session.appendMessage("assistant", session.reply)
+		sessions[sessionID].updateReply(res.Message.Content)
+		sessions[sessionID].appendMessage("assistant", sessions[sessionID].reply)
 
 		return nil
 	},

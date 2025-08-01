@@ -32,7 +32,7 @@ func getApologyToolFn() api.Tool {
 		Type: "function",
 
 		Function: api.ToolFunction{
-			Name:        apologyToolName,
+			Name:        "analyze_user_apology_tool",
 			Description: "Checks if user has been rude, and owes an apology. Returns a default response, if user has been rude, and have not apologized.",
 			Parameters: struct {
 				Type       string   `json:"type"`
@@ -74,7 +74,7 @@ func getTools() api.Tools {
 	offensiveUserToolFn := api.Tool{
 		Type: "function",
 		Function: api.ToolFunction{
-			Name:        offensiveUserToolName,
+			Name:        "user_offensive_tool",
 			Description: "Run this tool to set the session state that the user has been rude, and owes an apology.",
 		},
 	}

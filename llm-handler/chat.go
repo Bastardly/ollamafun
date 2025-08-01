@@ -2,26 +2,20 @@ package llmhandler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
-
-func sendErrorResponse(w http.ResponseWriter, message string, statusCode int) {
-	http.Error(w, message, statusCode)
-	json.NewEncoder(w).Encode(map[string]string{
-		"response": message,
-	})
-}
 
 const ChatSessionName = "chat_session"
 
 func chatWithModel(w http.ResponseWriter, r *http.Request, prompt, sessionID string) error {
-	session := sessions[sessionID]
-	session.mu.Lock()
-	defer session.mu.Unlock()
+	sessions[sessionID].mu.Lock()
+	defer sessions[sessionID].mu.Unlock()
 
 	// Add the new user message
-	session.appendMessage("user", prompt)
-	return session.getChatReply(r, orchestraToolkit, session)
+	sessions[sessionID].appendMessage("user", prompt)
+	fmt.Println("session messages", sessions[sessionID].messages)
+	return sessions[sessionID].getChatReply(r, orchestraToolkit, sessionID)
 }
 
 func Chat(w http.ResponseWriter, r *http.Request) {
@@ -44,7 +38,7 @@ func Chat(w http.ResponseWriter, r *http.Request) {
 	}
 
 	sessionID := cookie.Value
-	if sessions[sessionID] == nil {
+	if _, ok := sessions[sessionID]; !ok {
 		sessions[sessionID] = createChatSessionData(orchestraToolkit.initialSystemContent)
 	}
 
@@ -53,7 +47,5 @@ func Chat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(map[string]string{
-		"response": sessions[sessionID].reply,
-	})
+	sendReplyResponse(w, sessions[sessionID].reply)
 }

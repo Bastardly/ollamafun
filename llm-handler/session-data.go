@@ -2,26 +2,13 @@ package llmhandler
 
 import (
 	"context"
+	"fmt"
 	"net/http"
-	"net/url"
 	"sync"
 	"time"
 
 	"github.com/ollama/ollama/api"
 )
-
-// settings defines configuration options for controlling model behavior.
-//
-// Fields:
-//   - think: Enables or disables thinking mode.
-//   - stream: Enables or disables a streaming response.
-//   - temperature: Controls response creativity; lower values (e.g., 0.2-0.5) make responses more deterministic and focused.
-//   - topP: Limits deviation from core instructions; lower values (e.g., 0.5-0.7) reduce off-topic responses.
-//   - maxTokens: Sets the maximum number of output tokens to generate in the response.
-//   - numCtx: Sets the context limit (e.g., 100,000 tokens) for considering previous conversation history.
-//   - repeatPenalty: Discourages repetition; a value of 1.1 promotes varied responses.
-//   - stopWords: Specifies stop words to prevent the model from generating certain phrases or continuing past a point.
-//   - keepAlive: Keeps the connection alive indefinitely.
 
 type ChatSessionData struct {
 	reply    string
@@ -34,17 +21,8 @@ type generateInput struct {
 	Method string `json:"method"` // currently not used.
 }
 
-// todo - This won't scale. Need some cleanup if used public
+// todo - This won't scale at all. At least it needs some cleanup if used public
 var sessions = map[string]*ChatSessionData{}
-
-func getClient() *api.Client {
-	baseURL, err := url.Parse("http://127.0.0.1:8003")
-	if err != nil {
-		panic("Invalid Ollama base URL: " + err.Error())
-	}
-	httpClient := &http.Client{}
-	return api.NewClient(baseURL, httpClient)
-}
 
 var client = getClient()
 
@@ -57,21 +35,22 @@ func createChatSessionData(initialSystemContent string) *ChatSessionData {
 	return session
 }
 
-func (s ChatSessionData) appendMessage(role, content string) {
+func (s *ChatSessionData) appendMessage(role, content string) {
 	s.messages = append(s.messages, api.Message{
 		Role:    role,
 		Content: content,
 	})
 }
 
-func (s ChatSessionData) getChatReply(r *http.Request, toolkit ToolkitChat, session *ChatSessionData) error {
+// generateReply generates a reply based on chat history (messages)
+func (s *ChatSessionData) getChatReply(r *http.Request, toolkit ToolkitChat, sessionID string) error {
 	ctx, cancel := context.WithTimeout(r.Context(), 60*time.Second)
 	defer cancel()
 
-	session.reply = ""
+	fmt.Println("messages", sessions[sessionID].messages)
 
 	chatReq := &api.ChatRequest{
-		Messages: session.messages,
+		Messages: sessions[sessionID].messages,
 		Tools:    toolkit.tools,
 		Model:    toolkit.model,
 		Think:    toolkit.think,
@@ -87,12 +66,17 @@ func (s ChatSessionData) getChatReply(r *http.Request, toolkit ToolkitChat, sess
 		}}
 
 	return client.Chat(ctx, chatReq, func(res api.ChatResponse) error {
-		return toolkit.responseHandler(res, session)
+		fmt.Println("res", res)
+		return toolkit.responseHandler(res, sessionID)
 	})
 }
 
-// generateReply generates a reply using the specified LLM options. That is fresh on every new input since model holds no memory.
-func (s ChatSessionData) generateReply(w http.ResponseWriter, r *http.Request, toolkit ToolkitGenerate, prompt string, session *ChatSessionData) (string, error) {
+func (s *ChatSessionData) updateReply(reply string) {
+	s.reply = reply
+}
+
+// generateReply generates a single reply
+func (s *ChatSessionData) generateReply(w http.ResponseWriter, r *http.Request, toolkit ToolkitGenerate, prompt string, sessionID string) (string, error) {
 	ctx, cancel := context.WithTimeout(r.Context(), 60*time.Second)
 	defer cancel()
 
@@ -108,7 +92,8 @@ func (s ChatSessionData) generateReply(w http.ResponseWriter, r *http.Request, t
 
 	var reply string
 	err := client.Generate(ctx, req, func(res api.GenerateResponse) error {
-		return toolkit.responseHandler(res, session)
+
+		return toolkit.responseHandler(res, sessionID)
 	})
 
 	return reply, err
