@@ -70,7 +70,6 @@ var orchestraToolkit = ToolkitChat{
 		// todo
 		// if len(res.Message.ToolCalls) > 0 {
 		// 	toolCall := res.Message.ToolCalls[0]
-		// 	fmt.Printf("AI wants to call tool: %s\n", toolCall.Function.Name)
 
 		// 	if toolCall.Function.Name == offensiveUserToolName {
 		// 		// If the user has been rude, we need to set the session state that they owe an apology.
@@ -79,7 +78,6 @@ var orchestraToolkit = ToolkitChat{
 		// 	}
 		// }
 
-		fmt.Println("res.Message.Content", res.Message)
 		sessions[sessionID].updateReply(res.Message.Content)
 		sessions[sessionID].appendMessage("assistant", sessions[sessionID].reply)
 

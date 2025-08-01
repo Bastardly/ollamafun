@@ -14,7 +14,6 @@ func chatWithModel(w http.ResponseWriter, r *http.Request, prompt, sessionID str
 
 	// Add the new user message
 	sessions[sessionID].appendMessage("user", prompt)
-	fmt.Println("session messages", sessions[sessionID].messages)
 	return sessions[sessionID].getChatReply(r, orchestraToolkit, sessionID)
 }
 

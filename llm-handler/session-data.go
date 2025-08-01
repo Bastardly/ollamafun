@@ -47,8 +47,6 @@ func (s *ChatSessionData) getChatReply(r *http.Request, toolkit ToolkitChat, ses
 	ctx, cancel := context.WithTimeout(r.Context(), 60*time.Second)
 	defer cancel()
 
-	fmt.Println("messages", sessions[sessionID].messages)
-
 	chatReq := &api.ChatRequest{
 		Messages: sessions[sessionID].messages,
 		Tools:    toolkit.tools,
@@ -66,7 +64,6 @@ func (s *ChatSessionData) getChatReply(r *http.Request, toolkit ToolkitChat, ses
 		}}
 
 	return client.Chat(ctx, chatReq, func(res api.ChatResponse) error {
-		fmt.Println("res", res)
 		return toolkit.responseHandler(res, sessionID)
 	})
 }
@@ -92,7 +89,6 @@ func (s *ChatSessionData) generateReply(w http.ResponseWriter, r *http.Request, 
 
 	var reply string
 	err := client.Generate(ctx, req, func(res api.GenerateResponse) error {
-
 		return toolkit.responseHandler(res, sessionID)
 	})
 
