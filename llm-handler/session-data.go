@@ -16,23 +16,13 @@ type ChatSessionData struct {
 	mu       sync.Mutex
 }
 
-type generateInput struct {
-	Prompt string `json:"prompt"`
-	Method string `json:"method"` // currently not used.
-}
-
 // todo - This won't scale at all. At least it needs some cleanup if used public
 var sessions = map[string]*ChatSessionData{}
 
 var client = getClient()
 
-// Just a mock session handler for local single user
-func createChatSessionData(initialSystemContent string) *ChatSessionData {
-	session := &ChatSessionData{}
-
-	session.appendMessage("system", initialSystemContent)
-
-	return session
+func (s *ChatSessionData) updateReply(reply string) {
+	s.reply = reply
 }
 
 func (s *ChatSessionData) appendMessage(role, content string) {
@@ -68,9 +58,6 @@ func (s *ChatSessionData) getChatReply(r *http.Request, toolkit ToolkitChat, ses
 	})
 }
 
-func (s *ChatSessionData) updateReply(reply string) {
-	s.reply = reply
-}
 
 // generateReply generates a single reply
 func (s *ChatSessionData) generateReply(w http.ResponseWriter, r *http.Request, toolkit ToolkitGenerate, prompt string, sessionID string) (string, error) {

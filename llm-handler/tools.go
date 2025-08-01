@@ -67,20 +67,3 @@ func getApologyToolFn() api.Tool {
 		},
 	}
 }
-
-func getTools() api.Tools {
-	apologyToolFn := getApologyToolFn()
-
-	offensiveUserToolFn := api.Tool{
-		Type: "function",
-		Function: api.ToolFunction{
-			Name:        "user_offensive_tool",
-			Description: "Run this tool to set the session state that the user has been rude, and owes an apology.",
-		},
-	}
-
-	return api.Tools{
-		apologyToolFn,
-		offensiveUserToolFn,
-	}
-}

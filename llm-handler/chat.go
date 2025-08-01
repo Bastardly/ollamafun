@@ -2,11 +2,13 @@ package llmhandler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
-const ChatSessionName = "chat_session"
+type generateInput struct {
+	Prompt string `json:"prompt"`
+	Method string `json:"method"` // currently not used.
+}
 
 func chatWithModel(w http.ResponseWriter, r *http.Request, prompt, sessionID string) error {
 	sessions[sessionID].mu.Lock()
@@ -16,6 +18,8 @@ func chatWithModel(w http.ResponseWriter, r *http.Request, prompt, sessionID str
 	sessions[sessionID].appendMessage("user", prompt)
 	return sessions[sessionID].getChatReply(r, orchestraToolkit, sessionID)
 }
+
+const ChatSessionName = "chat_session"
 
 func Chat(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie(ChatSessionName)

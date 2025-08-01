@@ -33,3 +33,11 @@ func sendReplyResponse(w http.ResponseWriter, reply string) {
 		"response": reply,
 	})
 }
+
+func createChatSessionData(initialSystemContent string) *ChatSessionData {
+	session := &ChatSessionData{}
+
+	session.appendMessage("system", initialSystemContent)
+
+	return session
+}
