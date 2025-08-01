@@ -3,10 +3,12 @@ package main
 import (
 	"html/template"
 	"log"
-	llmhandler "main/llm-handler"
 	"net/http"
 	"sync"
 	"time"
+
+	llmhandler "main/llm-handler"
+	session "main/session"
 )
 
 var templates *template.Template
@@ -32,7 +34,9 @@ type PageData struct {
 
 func handleIndex(w http.ResponseWriter, r *http.Request) {
 	templates.Execute(w, PageData{
-		PromptMethods: llmhandler.AvailableMethods,
+		PromptMethods: []string{
+			"default",
+		},
 	})
 }
 
@@ -45,5 +49,7 @@ func loadUITemplates() {
 }
 
 func setMainRoute() {
-	http.HandleFunc("/", handleIndex)
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		session.WithSession(handleIndex, llmhandler.ChatSessionName)(w, r)
+	})
 }
