@@ -42,7 +42,7 @@ func Chat(w http.ResponseWriter, r *http.Request) {
 
 	sessionID := cookie.Value
 	if _, ok := sessions[sessionID]; !ok {
-		sessions[sessionID] = createChatSessionData(orchestraToolkit.initialSystemContent)
+		sessions[sessionID] = createChatSessionData(orchestraToolkit.primeMessages)
 	}
 
 	if err := chatWithModel(w, r, input.Prompt, sessionID); err != nil {

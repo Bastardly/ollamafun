@@ -34,10 +34,12 @@ func sendReplyResponse(w http.ResponseWriter, reply string) {
 	})
 }
 
-func createChatSessionData(initialSystemContent string) *ChatSessionData {
+func createChatSessionData(primeMessages []api.Message) *ChatSessionData {
 	session := &ChatSessionData{}
 
-	session.appendMessage("system", initialSystemContent)
+	for _, msg := range primeMessages {
+		session.appendMessage(msg.Role, msg.Content)
+	}
 
 	return session
 }

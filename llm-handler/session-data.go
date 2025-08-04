@@ -2,7 +2,6 @@ package llmhandler
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"sync"
 	"time"
@@ -57,7 +56,6 @@ func (s *ChatSessionData) getChatReply(r *http.Request, toolkit ToolkitChat, ses
 		return toolkit.responseHandler(res, sessionID)
 	})
 }
-
 
 // generateReply generates a single reply
 func (s *ChatSessionData) generateReply(w http.ResponseWriter, r *http.Request, toolkit ToolkitGenerate, prompt string, sessionID string) (string, error) {

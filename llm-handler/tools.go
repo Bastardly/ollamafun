@@ -67,3 +67,27 @@ func getApologyToolFn() api.Tool {
 		},
 	}
 }
+
+const createFileToolName = "create_file_tool"
+
+func getCreateFileTool() api.Tool {
+	return api.Tool{
+		Type: "function",
+		Function: api.ToolFunction{
+			Name:        createFileToolName,
+			Description: "Creates a md file with given text context",
+		},
+	}
+}
+
+const replyToolName = "reply_tool"
+
+func getReplyTool() api.Tool {
+	return api.Tool{
+		Type: "function",
+		Function: api.ToolFunction{
+			Name:        replyToolName,
+			Description: "Creates a reply to the user",
+		},
+	}
+}
